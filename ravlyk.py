@@ -41,6 +41,14 @@ class Ravlyk:
         column = gtk.TreeViewColumn('Files')
         self.image_list.append_column(column)
 
+        def select_image(selection, model, items, is_selected):
+            print items, is_selected
+            if not is_selected:
+                self.display_image(self.images[items[0]])
+            return True
+
+        self.image_list.get_selection().set_select_function(select_image, full=True)
+
         self.file_list_model = gtk.ListStore(str)
         self.image_list.set_model(self.file_list_model)
         cell = gtk.CellRendererText()
@@ -61,20 +69,11 @@ class Ravlyk:
         if response == gtk.RESPONSE_OK:
             files = img_load_dialog.get_filenames()
 
-            def select_image(selection, model, items, is_selected):
-                if is_selected:
-                    self.display_image(self.images[items[0]])
-                return True
-
             for filepath in sorted(files):
                 image = RavlykImage(filepath)
                 self.images.append(image)
                 self.file_list_model.append([image.filename])
 
-                self.image_list.get_selection().set_select_function(select_image, full=True)
-
-            for file in files:
-                print ('%s selected' % (file,))
         elif response == gtk.RESPONSE_CANCEL:
             print ('Closed, no files selected')
 
