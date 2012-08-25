@@ -1,4 +1,3 @@
-import os
 from image import RavlykImage
 
 try:
@@ -15,7 +14,9 @@ except:
 
 class Ravlyk:
     wTree = None
-    window_main=None
+    window_main = None
+    selected_left = None
+    selected_right = None
 
     def __init__( self ):
         self.images = []
@@ -33,6 +34,9 @@ class Ravlyk:
         self.window_main.show_all()
 
         self.left_image = builder.get_object('left_image')
+        self.left_image = builder.get_object('left_image')
+        self.left_image.connect("expose-event", self.refresh_image)
+
         self.right_image = builder.get_object('right_image')
 
         self.image_list = builder.get_object('treeview_images')
@@ -42,9 +46,9 @@ class Ravlyk:
         self.image_list.append_column(column)
 
         def select_image(selection, model, items, is_selected):
-            print items, is_selected
             if not is_selected:
-                self.display_image(self.images[items[0]])
+                self.selected_left = self.images[items[0]]
+                self.display_image(self.selected_left)
             return True
 
         self.image_list.get_selection().set_select_function(select_image, full=True)
@@ -58,7 +62,7 @@ class Ravlyk:
         self.window_main.show_all()
 
     def load_images(self, data):
-        img_load_dialog = gtk.FileChooserDialog (title="Load images",
+        img_load_dialog = gtk.FileChooserDialog(title="Load images",
             parent=self.window_main,
             action=gtk.FILE_CHOOSER_ACTION_OPEN,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
@@ -81,7 +85,14 @@ class Ravlyk:
 
     def display_image(self, image):
         pixbuf = gtk.gdk.pixbuf_new_from_file(image.path)
-        self.left_image.window.draw_pixbuf(self.left_image.style.bg_gc[gtk.STATE_NORMAL], pixbuf, 0, 0, 0, 0)
+        self.left_image.window.draw_pixbuf(self.left_image.style.bg_gc[gtk.STATE_NORMAL],
+            pixbuf, 0, 0, 0, 0, width=image.size[0], height=image.size[1])
+        self.left_image.set_size_request(*image.size)
+
+    def refresh_image(self, widget, event):
+        if self.selected_left:
+            pixbuf = gtk.gdk.pixbuf_new_from_file(self.selected_left.path)
+            widget.window.draw_pixbuf(widget.style.bg_gc[gtk.STATE_NORMAL], pixbuf, 0, 0, 0, 0)
 
 
 if __name__ == "__main__":
