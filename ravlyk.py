@@ -29,6 +29,7 @@ class Ravlyk:
         self.window_main = builder.get_object('window_main')
         self.window_main.set_title('Ravlyk')
         self.window_main.set_size_request(1000, 500)
+        self.window_main.connect("destroy", lambda w: gtk.main_quit())
         self.window_main.show_all()
 
         self.left_image = builder.get_object('left_image')
