@@ -1,5 +1,4 @@
 import os
-import sys
 from image import RavlykImage
 
 try:
@@ -17,13 +16,10 @@ except:
 class Ravlyk:
     wTree = None
     window_main=None
-    window_load_images = None
 
     def __init__( self ):
-        # list of file paths
         self.images = []
         self.show_window()
-        self.load_images()
 
     def show_window(self):
         builder = gtk.Builder()
@@ -41,33 +37,16 @@ class Ravlyk:
         self.image_list = builder.get_object('treeview_images')
         self.image_list.set_size_request(1, 0)
 
-        window.show_all()
-
-    # todo load images
-    def load_images(self):
-        img_dir = 'images'
-        files = os.listdir(img_dir)
-
         column = gtk.TreeViewColumn('Files')
         self.image_list.append_column(column)
 
-        file_list_model = gtk.ListStore(str)
-        self.image_list.set_model(file_list_model)
+        self.file_list_model = gtk.ListStore(str)
+        self.image_list.set_model(self.file_list_model)
         cell = gtk.CellRendererText()
         column.pack_start(cell, True)
         column.add_attribute(cell, 'text', 0)
 
-        for filename in sorted(files):
-            self.images.append(RavlykImage(os.path.join(img_dir, filename)))
-            file_list_model.append([filename])
-
-        def select_image(selection, model, items, is_selected):
-            if is_selected:
-                self.display_image(self.images[items[0]])
-            return True
-
-        self.image_list.get_selection().set_select_function(select_image, full=True)
-
+        self.window_main.show_all()
 
     def load_images(self, data):
         img_load_dialog = gtk.FileChooserDialog (title="Load images",
@@ -79,11 +58,25 @@ class Ravlyk:
         response = img_load_dialog.run()
 
         if response == gtk.RESPONSE_OK:
-            filenames = img_load_dialog.get_filenames()
-            for file in filenames:
+            files = img_load_dialog.get_filenames()
+
+            def select_image(selection, model, items, is_selected):
+                if is_selected:
+                    self.display_image(self.images[items[0]])
+                return True
+
+            for filepath in sorted(files):
+                image = RavlykImage(filepath)
+                self.images.append(image)
+                self.file_list_model.append([image.filename])
+
+                self.image_list.get_selection().set_select_function(select_image, full=True)
+
+            for file in files:
                 print ('%s selected' % (file,))
         elif response == gtk.RESPONSE_CANCEL:
             print ('Closed, no files selected')
+
         img_load_dialog.destroy()
 
     def display_image(self, image):
