@@ -25,7 +25,9 @@ class WhichTransform:
     and where they should be, and calculates a transformation.
     """
 
-    def __init__(self, p1_source, p2_source, p1_dest, p2_dest):
+    def __init__(self, poi_source, poi_dest):
+        (p1_source, p2_source) = poi_source
+        (p1_dest, p2_dest) = poi_dest
         self.x1_src = p1_source[0]
         self.y1_src = p1_source[1]
         self.x2_src = p2_source[0]

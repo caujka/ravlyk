@@ -35,8 +35,9 @@ class Ravlyk:
         self.window_main.show_all()
 
         self.left_image = builder.get_object('left_image')
-        self.left_image = builder.get_object('left_image')
+        self.right_image = builder.get_object('right_image')
         self.left_image.connect("expose-event", self.refresh_image)
+        self.right_image.connect("expose-event", self.refresh_image)
 
         def select_poi(widget, event):
             self.selected_left.add_poi(int(event.x), int(event.y))
@@ -113,12 +114,14 @@ class Ravlyk:
         self.left_image.set_size_request(*image.size)
 
     def refresh_image(self, widget, event):
-        if self.selected_left:
-            pixbuf = gtk.gdk.pixbuf_new_from_file(self.selected_left.path)
+        i=self.selected_left
+        if i:
+            pixbuf = gtk.gdk.pixbuf_new_from_file(i.path)
             widget.window.draw_pixbuf(widget.style.bg_gc[gtk.STATE_NORMAL], pixbuf, 0, 0, 0, 0)
 
-            for poi in self.selected_left.poi:
-                self.draw_poi(self.left_image, poi[0], poi[1])
+            for p in i.poi:
+                if p:
+                    self.draw_poi(self.left_image, p[0], p[1])
 
 
 if __name__ == "__main__":
