@@ -35,25 +35,26 @@ def transform_images(images, dest_dir):
         transform(src_image, image, dest_dir)
 
 
-image1 = RavlykImage('/home/ego/Projects/khakaton/ravlyk/images/IMG_5962.JPG')
-image2 = RavlykImage('/home/ego/Projects/khakaton/ravlyk/images/IMG_5963.JPG')
-image3 = RavlykImage('/home/ego/Projects/khakaton/ravlyk/images/IMG_5964.JPG')
-image3 = RavlykImage('/home/ego/Projects/khakaton/ravlyk/images/IMG_5965.JPG')
+image0 = RavlykImage('images/IMG_5961.JPG')
+image1 = RavlykImage('images/IMG_5962.JPG')
+image2 = RavlykImage('images/IMG_5963.JPG')
+image3 = RavlykImage('images/IMG_5964.JPG')
 
+p1_0 = (305, 318)
 p1_1 = (303, 293)
 p1_2 = (308, 314)
 p1_3 = (328, 312)
-p1_4 = (336, 314)
 
+p2_0 = (303, 561)
 p2_1 = (302, 539)
 p2_2 = (305, 564)
 p2_3 = (326, 558)
-p2_4 = (344, 359)
 
+image0.poi = (p1_0, p2_0)
 image1.poi = (p1_1, p2_1)
 image2.poi = (p1_2, p2_2)
 image3.poi = (p1_3, p2_3)
-image3.poi = (p1_4, p2_4)
+image4.poi = (p1_4, p2_4)
 
 #transform(image1, image2, '/home/ego/Projects/khakaton/ravlyk/transformed/')
-transform_images([image1, image2, image3], '/home/ego/Projects/khakaton/ravlyk/transformed/')
+transform_images([image0, image1, image2, image3], 'transformed/')
